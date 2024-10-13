@@ -1,5 +1,6 @@
 import os from 'node:os';
 import readline from 'node:readline/promises';
+import path from 'node:path';
 import * as CMD from '../cmd/collection.js'
 
 
@@ -18,7 +19,7 @@ function parseArgs(str, ...numAndParsers) {
 
     for (let j = 0; j < numArgs; j++) {
       const [parsedArg, rest] = parser(remainingStr);
-      args.push(parsedArg);
+      if (parsedArg.length) args.push(parsedArg);
       remainingStr = rest.trim();
     }
   }
@@ -71,7 +72,20 @@ function parseInput(input, rl) {
       break;
     case 'os':
       result = parseArgs(str, 1, parseProps);
-      CMD.osInfo(...parseArgs(str, 1, parseProps));
+      CMD.osInfo(result);
+      break;
+    case 'ls':
+      result = parseArgs(str, 1, parsePath);
+      {
+        let dir;
+        if (typeof result[0] === 'string') {
+          dir = result[0];
+          result.shift();
+        } else {
+          dir = path.resolve(process.cwd());
+        }
+        CMD.ls(dir, result);
+      }
       break;
     case 'view':
       result = parseArgs(str, 1, parsePath, 1, parseProps);
