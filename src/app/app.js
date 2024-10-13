@@ -1,11 +1,10 @@
 import os from 'node:os';
 import readline from 'node:readline/promises';
+import * as CMD from '../cmd/collection.js'
 
 
 function getCommand(input) {
-  console.log(input);
   const [cmd, ...args] = input.trim().split(' ');
-  console.log(args.join(' '));
   return [cmd, args.join(' ')];
 }
 
@@ -50,21 +49,41 @@ function parsePath(str) {
 }
 
 
-function parseProps(str) {
+function parseProps(str, subParse = true) {
   const propMatch = str.match(/^--?(\w+)(?:=(.*))?/);
-  if (!propMatch) {
-    throw new Error('Invalid property format');
-  }
+  if (!propMatch) return [{}, ''];
 
   const [, key, value] = propMatch;
-  if (value) {
-    const [parsedValue, rest] = parsePath(value);
-    return [{ [key]: parsedValue }, str.slice(propMatch[0].length)];
-  }
+  const lastStr = str.slice(propMatch[0].length);
 
-  return [{ [key]: true }, str.slice(propMatch[0].length)];
+  const parsedValue = value ? (subParse ? parsePath(value)[0] : value) : true;
+  return [{ [key]: parsedValue }, lastStr];
 }
 
+
+function parseInput(input, rl) {
+  const [cmd, str] = getCommand(input);
+  let result;
+
+  switch (cmd) {
+    case 'copy':
+      result = parseArgs(str, 2, parsePath);
+      break;
+    case 'os':
+      result = parseArgs(str, 1, parseProps);
+      CMD.osInfo(...parseArgs(str, 1, parseProps));
+      break;
+    case 'view':
+      result = parseArgs(str, 1, parsePath, 1, parseProps);
+      break;
+    default:
+      throw new Error('Unknown command');
+  }
+
+  return [cmd, result];
+}
+
+//------------------------------------------------
 export default class App {
   constructor() {
     this.rl = readline.createInterface({
@@ -73,37 +92,24 @@ export default class App {
     });
     this.rl.on('line', async (line) => {
       try {
-          console.log('>', this.parseInput(line));
+        console.log('>', parseInput(line, this.rl));
       } catch(err) {
-          console.error(err.message);
+        console.error(err.message);
       }
+    });
+    this.rl.on('close', () => {
+      console.log(`Thank you for using File Manager, ${this.options.username}, goodbye!`);
     });
   }
   
-
-  parseInput(input) {
-    const [cmd, str] = getCommand(input);
-    let result;
-  
-    switch (cmd) {
-      case 'copy':
-        result = parseArgs(str, 2, parsePath);
-        break;
-      case 'os':
-        result = parseArgs(str, 1, parseProps);
-        break;
-      case 'view':
-        result = parseArgs(str, 1, parsePath, 1, parseProps);
-        break;
-      default:
-        throw new Error('Unknown command');
-    }
-  
-    return [cmd, result];
-  }
-  
-
   start() {
+    const args = process.argv;
+    this.options = { username: os.userInfo().username };
+    for (let i = 2, argsLen = args.length; i < argsLen; i++) {
+      this.options = { ...this.options, ...parseProps(args[i], false)[0] };
+    }
+    console.log(`Welcome to the File Manager, ${this.options.username}!`);
+   
     process.chdir(os.homedir());
   }
 }
