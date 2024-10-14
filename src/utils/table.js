@@ -1,5 +1,6 @@
 import { Console } from 'node:console';
 import { Transform } from 'node:stream';
+import { styleText } from 'node:util';
 
 // https://stackoverflow.com/questions/49618069/remove-index-from-console-table
 export function table(input) {
@@ -27,7 +28,19 @@ export function table(input) {
         .map((cell) => {
           const trimmed = cell.trim();
           const padding = Math.max(0, (cell.length - trimmed.length) / 2);
-          return ' '.repeat(Math.floor(padding)) + trimmed + ' '.repeat(Math.ceil(padding));
+          return ' '.repeat(Math.floor(padding)) + styleText('green', trimmed) + ' '.repeat(Math.ceil(padding));
+        })
+        .join('│');
+    } else if (index > 2) {
+      r = r
+        .split('│')
+        .map((cell, i) => {
+          if (i === 1) {
+            return cell.replace(/(\d+)/, '\x1b[36m$1\x1b[0m');
+          } else {
+            // return cell.replace(/(\d+)/, '\x1b[36m$1\x1b[0m');
+            return cell;
+          }
         })
         .join('│');
     }

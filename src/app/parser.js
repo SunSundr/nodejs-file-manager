@@ -191,7 +191,7 @@ export async function parseInput(input, rl) {
       break;
 
     default:
-      console.error(styleText('red', '[Error] Unknown command:'), cmd, '\n');
+      console.error(styleText('red', '[Error] Invalid input:'), cmd, '\n');
   }
 
   return [cmd, result];
