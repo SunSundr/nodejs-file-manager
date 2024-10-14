@@ -8,3 +8,4 @@ export { rn } from './fs/rn.js';
 export { cp } from './fs/cp.js';
 export { rm } from './fs/rm.js';
 export { mv } from './fs/mv.js';
+export { brotli } from './archive/brotli.js';

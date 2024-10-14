@@ -71,13 +71,11 @@ async function parseInput(input, rl) {
   let result;
 
   switch (cmd) {
-    case 'copy':
-      result = parseArgs(str, 2, parsePath);
-      break;
     case 'os':
       result = parseArgs(str, 1, parseProps);
       await CMD.osInfo(...result);
       break;
+
     case 'hash':
       result = parseArgs(str, 1, parsePath);
       {
@@ -93,31 +91,39 @@ async function parseInput(input, rl) {
       break;
 
     case 'cat':
+    case 'read':
       result = parseArgs(str, 1, parsePath);
       await CMD.cat(result[0], rl);
       break;
 
     case 'add':
+    case 'new':
       result = parseArgs(str, 1, parsePath);
       await CMD.add(result[0], rl);
       break;
 
     case 'rn':
+    case 'rename':
       result = parseArgs(str, 2, parsePath);
       await CMD.rn(...result);
       break;
 
     case 'cp':
+    case 'copy':
       result = parseArgs(str, 2, parsePath);
       await CMD.cp(...result);
       break;
 
     case 'mv':
+    case 'move':
       result = parseArgs(str, 2, parsePath);
       await CMD.mv(...result);
       break;
 
     case 'rm':
+    case 'del':
+    case 'delete':
+    case 'remove':
       result = parseArgs(str, 1, parsePath);
       await CMD.rm(result[0]);
       break;
@@ -125,6 +131,7 @@ async function parseInput(input, rl) {
     case 'up':
       CMD.cd('..');
       break;
+
     case 'cd':
       result = parseArgs(str, 1, parsePath);
       {
@@ -133,6 +140,7 @@ async function parseInput(input, rl) {
         CMD.cd(dir);
       }
       break;
+
     case 'ls':
       result = parseArgs(str, 1, parsePath);
       {
@@ -150,6 +158,24 @@ async function parseInput(input, rl) {
         await CMD.ls(dir, ...result);
       }
       break;
+
+    case 'compress':
+    case 'decompress':
+      result = parseArgs(str, 2, parsePath);
+      {
+        let ext = 'br';
+        if (!result[1]) result[1] = '';
+        if (result[2]) {
+          if (typeof result[2] === 'object') {
+            ext = String(Object.keys(result[2])[0]);
+          } else {
+            ext = result[2].trim();
+          }
+        }
+        await CMD.brotli(result[0], result[1], ext, cmd);
+      }
+      break;
+
     default:
       console.error('Unknown command:', cmd);
   }
@@ -176,7 +202,7 @@ export default class App {
       }
     });
     this.rl.on('close', () => {
-      console.log(`Thank you for using File Manager, ${this.options.username}, goodbye!`);
+      console.log(`...\nThank you for using File Manager, ${this.options.username}, goodbye!\n`);
     });
   }
 
