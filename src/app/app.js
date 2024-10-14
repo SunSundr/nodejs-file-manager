@@ -1,8 +1,13 @@
 import os from 'node:os';
 import readline from 'node:readline/promises';
+import { readFile } from "node:fs/promises";
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as CMD from '../cmd/collection.js';
 import { fileExist } from '../utils/fileExist.js';
+
+
+const bannerFile = path.join(path.dirname(fileURLToPath(import.meta.url)), 'banner.txt');
 
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
@@ -211,12 +216,14 @@ export default class App {
     this.rl.prompt();
   }
   
-  start() {
+  async start() {
     const args = process.argv;
     this.options = { username: os.userInfo().username };
     for (let i = 2, argsLen = args.length; i < argsLen; i++) {
       this.options = { ...this.options, ...parseProps(args[i], false)[0] };
     }
+    const banner = await readFile(bannerFile, 'utf8');
+    console.log(banner, '\n');
     console.log(`Welcome to the File Manager, ${this.options.username}!`);
     console.log('-'.repeat(70));
     process.chdir(os.homedir());
