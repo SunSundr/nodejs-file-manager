@@ -19,7 +19,7 @@ function parseArgs(str, ...numAndParsers) {
 
     for (let j = 0; j < numArgs; j++) {
       const [parsedArg, rest] = parser(remainingStr);
-      if (parsedArg.length) args.push(parsedArg);
+      if (typeof parsedArg === 'object' || parsedArg.length) args.push(parsedArg);
       remainingStr = rest.trim();
     }
   }
@@ -62,7 +62,7 @@ function parseProps(str, subParse = true) {
 }
 
 
-function parseInput(input, rl) {
+async function parseInput(input, rl) {
   const [cmd, str] = getCommand(input);
   let result;
 
@@ -72,19 +72,31 @@ function parseInput(input, rl) {
       break;
     case 'os':
       result = parseArgs(str, 1, parseProps);
-      CMD.osInfo(result);
+      CMD.osInfo(...result);
+      break;
+    case 'cd':
+      result = parseArgs(str, 1, parsePath);
+      {
+        let dir = result[0];
+        if (dir === '~' || !dir) dir = os.homedir();
+        CMD.cd(dir);
+      }
       break;
     case 'ls':
       result = parseArgs(str, 1, parsePath);
       {
         let dir;
         if (typeof result[0] === 'string') {
-          dir = result[0];
-          result.shift();
+          if (result[0].startsWith('-')) {
+            result[0] = parseProps(result[0])[0];
+          } else {
+            dir = result[0];
+            result.shift();
+          }
         } else {
           dir = path.resolve(process.cwd());
         }
-        CMD.ls(dir, result);
+        await CMD.ls(dir, ...result);
       }
       break;
     case 'view':
@@ -100,20 +112,29 @@ function parseInput(input, rl) {
 //------------------------------------------------
 export default class App {
   constructor() {
+    this.eol = os.EOL;
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
     });
     this.rl.on('line', async (line) => {
       try {
-        console.log('>', parseInput(line, this.rl));
+        parseInput(line, this.rl).finally(() => {
+          this.printPrompt();
+        });
       } catch(err) {
         console.error(err.message);
+        this.printPrompt();
       }
     });
     this.rl.on('close', () => {
       console.log(`Thank you for using File Manager, ${this.options.username}, goodbye!`);
     });
+  }
+
+  printPrompt() {
+    this.rl.output.write(`You are currently in: ${process.cwd()}${this.eol}`);
+    this.rl.prompt();
   }
   
   start() {
@@ -123,7 +144,8 @@ export default class App {
       this.options = { ...this.options, ...parseProps(args[i], false)[0] };
     }
     console.log(`Welcome to the File Manager, ${this.options.username}!`);
-   
+    console.log('-'.repeat(70));
     process.chdir(os.homedir());
+    this.printPrompt();
   }
 }

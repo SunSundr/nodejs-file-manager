@@ -52,6 +52,22 @@ export async function ls(directory = '.', ...params) {
       };
     }));
 
+    const defaultSort = () => {
+      tableData.sort((a, b) => {
+        if (params.some(option => option.r)) {
+          if (a.Type === b.Type) {
+            return a.Name.localeCompare(b.Name);
+          }
+          return a.Type === 'File' ? -1 : 1;
+        } else {
+          if (a.Type === b.Type) {
+            return a.Name.localeCompare(b.Name);
+          }
+          return a.Type === 'Directory' ? -1 : 1;
+        }
+      });
+    }
+
     for (const option of params) {
       if (option.R) {
         for (const file of files) {
@@ -75,19 +91,7 @@ export async function ls(directory = '.', ...params) {
       } else if (option.r) {
         tableData.reverse();
       } else {
-        tableData.sort((a, b) => {
-          if (params.some(option => option.r)) {
-            if (a.Type === b.Type) {
-              return a.Name.localeCompare(b.Name);
-            }
-            return a.Type === 'File' ? -1 : 1;
-          } else {
-            if (a.Type === b.Type) {
-              return a.Name.localeCompare(b.Name);
-            }
-            return a.Type === 'Directory' ? -1 : 1;
-          }
-        });
+        defaultSort();
       }
 
       if (option['full-time']) {
@@ -103,14 +107,15 @@ export async function ls(directory = '.', ...params) {
         }));
       }
       if (option.m) {
-        console.log(tableData.map(file => file.Name).join(', '));
+        console.log(tableData.map(file => file.Name).join(', '), '\n');
         return;
       }
       if (option['1']) {
-        console.log(tableData.map(file => file.Name).join('\n'));
+        console.log(tableData.map(file => file.Name).join('\n'), '\n');
         return;
       }
     }
+    if (!params.length) defaultSort();
 
     tableData.forEach((data, index) => data.Index = index + 1);
     console.log(table(tableData));

@@ -28,5 +28,5 @@ export function table(input) {
     result += `${r}\n`;
   });
 
-  return result;
+  return result.trim();
 }

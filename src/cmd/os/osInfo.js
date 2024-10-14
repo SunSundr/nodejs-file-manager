@@ -6,7 +6,8 @@ export const osInfo = async (...params) => {
   const numProps = params.length;
   for (let i = 0; i < numProps; i++) {
     const prop = params[i];
-    const key = Object.keys(prop)[0].toLowerCase();
+    const keys = Object.keys(prop);
+    const key = keys.length ? keys[0].toLowerCase() : '';
     switch (key) {
       case 'eol': // Get EOL (default system End-Of-Line)
         console.log('Default system EOL(End-Of-Line):', JSON.stringify(os.EOL));
@@ -47,9 +48,12 @@ export const osInfo = async (...params) => {
           }
         }
         break;
-
+      case '':
+      case 'platform':
+        console.log('Operating system platform:', os.platform());
+        break;
       default:
-        console.error('Unknown option');
+        console.error('Error: Unknown option');
     }
   }
 };
