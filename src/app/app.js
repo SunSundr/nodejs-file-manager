@@ -1,15 +1,8 @@
 import os from 'node:os';
 import readline from 'node:readline/promises';
 import path from 'node:path';
-import fs from 'node:fs/promises';
-import * as CMD from '../cmd/collection.js'
-
-async function fileExist(filePath) {
-  return fs
-      .access(filePath, fs.constants.F_OK)
-      .then(() => true)
-      .catch(() => false);
-}
+import * as CMD from '../cmd/collection.js';
+import { fileExist } from '../utils/fileExist.js';
 
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
@@ -95,9 +88,15 @@ async function parseInput(input, rl) {
             if (!isEmpty(option)) result = ['', option];
           }
         }
-        CMD.hash(...result.map((data) => typeof data === 'object' ? Object.keys(data)[0] : data));
+        await CMD.hash(...result.map((data) => typeof data === 'object' ? Object.keys(data)[0] : data));
       }
       break;
+
+    case 'cat':
+      result = parseArgs(str, 1, parsePath);
+      await CMD.cat(result[0], rl);
+      break;
+
     case 'up':
       CMD.cd('..');
       break;

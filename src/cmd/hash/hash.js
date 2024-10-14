@@ -23,28 +23,32 @@ export async function hash(fPath, param = undefined) {
     console.error('[Error] Operation failed: Specify the path to the file or use --help');
     return;
   }
-  const algorithm = param.toUpperCase() || 'SHA256';
+  const algorithm = param?.toUpperCase() || 'SHA256';
   const filePath = path.resolve(process.cwd(), fPath);
   try {
-    const hash = crypto.createHash(algorithm.toLowerCase());
-    const stream = fs.createReadStream(filePath);
-    const stopProgress = spinner();
+    await new Promise((resolve, reject) => {
+      const hash = crypto.createHash(algorithm.toLowerCase());
+      const stream = fs.createReadStream(filePath);
+      const stopProgress = spinner();
 
-    stream.on('data', (chunk) => {
-      hash.update(chunk);
-    });
+      stream.on('data', (chunk) => {
+        hash.update(chunk);
+      });
 
-    stream.on('end', () => {
-      const result = hash.digest('hex');
-      stopProgress();
-      console.log(`${algorithm} hash for file "${path.basename(filePath)}":`);
-      console.log(result, '\n');
-    });
+      stream.on('end', () => {
+        const result = hash.digest('hex');
+        stopProgress();
+        console.log(`${algorithm} hash for file "${path.basename(filePath)}":`);
+        console.log(result, '\n');
+        resolve();
+      });
 
-    stream.on('error', (err) => {
-      console.error(`[Error] Calculation ${algorithm} hash for file "${path.basename(filePath)}" failed:\n`, err.message,'\n');
+      stream.on('error', (err) => {
+        stopProgress();
+        reject(err);
+      });
     });
   } catch(err) {
-    console.error(`[Error] Operation failed:`, err.message);
+    console.error(`[Error] Calculation ${algorithm} hash for file "${path.basename(filePath)}" failed:\n`, err.message,'\n');
   }
 };
