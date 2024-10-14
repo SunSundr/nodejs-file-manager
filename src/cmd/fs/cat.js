@@ -52,9 +52,7 @@ export async function cat(param, rl) {
         resolve();
       });
 
-      stream.on('error', (err) => {
-          reject(err);
-      });
+      stream.on('error', reject);
     });
   } catch (err) {
     process.stderr.write(`[Error] Reading file "${path.basename(filePath)}":\n${err.message}\n`);

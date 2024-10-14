@@ -5,3 +5,4 @@ export { hash } from './hash/hash.js';
 export { cat } from './fs/cat.js';
 export { add } from './fs/add.js';
 export { rn } from './fs/rn.js';
+export { cp } from './fs/cp.js';
