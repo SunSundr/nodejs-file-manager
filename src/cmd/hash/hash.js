@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spinner } from '../../utils/spinner.js';
 
 /**
  * Calculates the hash of a file using the specified algorithm.
@@ -19,14 +20,15 @@ export async function hash(fPath, param = undefined) {
     return;
   }
   if (!fPath) {
-    console.error('[Error] Operation failed: Specify the path to the file or --help');
+    console.error('[Error] Operation failed: Specify the path to the file or use --help');
     return;
   }
-  const algorithm = param || 'sha256';
+  const algorithm = param.toUpperCase() || 'SHA256';
   const filePath = path.resolve(process.cwd(), fPath);
   try {
     const hash = crypto.createHash(algorithm.toLowerCase());
     const stream = fs.createReadStream(filePath);
+    const stopProgress = spinner();
 
     stream.on('data', (chunk) => {
       hash.update(chunk);
@@ -34,12 +36,13 @@ export async function hash(fPath, param = undefined) {
 
     stream.on('end', () => {
       const result = hash.digest('hex');
-      console.log(`SHA256 hash for file "${path.basename(filePath)}":`);
+      stopProgress();
+      console.log(`${algorithm} hash for file "${path.basename(filePath)}":`);
       console.log(result, '\n');
     });
 
     stream.on('error', (err) => {
-      console.error(`[Error] Calculation ${algorithm.toUpperCase()} hash for file "${path.basename(filePath)}" failed:\n`, err.message,'\n');
+      console.error(`[Error] Calculation ${algorithm} hash for file "${path.basename(filePath)}" failed:\n`, err.message,'\n');
     });
   } catch(err) {
     console.error(`[Error] Operation failed:`, err.message);

@@ -14,7 +14,6 @@ export const osInfo = async (...params) => {
         break;
 
       case 'cpus': // Get host machine CPUs info
-      case 'cpu':
         {
           const transformedData = os.cpus().map((cpu, index) => ({
             Index: index + 1,
@@ -48,10 +47,26 @@ export const osInfo = async (...params) => {
           }
         }
         break;
+
       case '':
       case 'platform':
         console.log('Operating system platform:', os.platform());
         break;
+
+      case 'help':
+        console.log(`
+        Usage: os (option)
+        - option: The information you want to retrieve. Available options are:
+        '--eol': Get the default system End-Of-Line.
+        '--cpus': Get information about the host machine's CPUs.
+        '--homedir' or '-h': Get the home directory path.
+        '--username': Get the current system user name.
+        '--architecture' or '--arch': Get the CPU architecture for which Node.js binary has been compiled.
+        '--platform' or '--' (default return): Get the operating system platform.
+        '--help': Display this help message.
+        `);
+        break;
+
       default:
         console.error('[Error] Unknown option');
     }
