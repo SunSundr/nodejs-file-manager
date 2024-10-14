@@ -2,7 +2,12 @@ import os from 'node:os';
 import { styleText } from 'node:util';
 import { table } from '../../utils/table.js';
 
-// Operating system info (prints following information in console)
+/**
+ * Prints operating system information to the console based on provided parameters.
+ *
+ * @param {...Object} params - The parameters specifying the information to retrieve.
+ * @returns {Promise<void>}
+ */
 export const osInfo = async (...params) => {
   const numProps = params.length;
   for (let i = 0; i < numProps; i++) {
