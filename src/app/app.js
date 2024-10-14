@@ -1,8 +1,19 @@
 import os from 'node:os';
 import readline from 'node:readline/promises';
 import path from 'node:path';
+import fs from 'node:fs/promises';
 import * as CMD from '../cmd/collection.js'
 
+async function fileExist(filePath) {
+  return fs
+      .access(filePath, fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
+}
+
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
 
 function getCommand(input) {
   const [cmd, ...args] = input.trim().split(' ');
@@ -51,7 +62,7 @@ function parsePath(str) {
 
 
 function parseProps(str, subParse = true) {
-  const propMatch = str.match(/^--?(\w+)(?:=(.*))?/);
+  const propMatch = typeof str === 'string' ? str.match(/^--?(\w+)(?:=(.*))?/) : null;
   if (!propMatch) return [{}, ''];
 
   const [, key, value] = propMatch;
@@ -73,6 +84,19 @@ async function parseInput(input, rl) {
     case 'os':
       result = parseArgs(str, 1, parseProps);
       CMD.osInfo(...result);
+      break;
+    case 'hash':
+      result = parseArgs(str, 1, parsePath);
+      {
+        if (result[0]) {
+          const isExist = await fileExist(result[0]);
+          if (!isExist ) {
+            const option = parseProps(result[1] ? result[1] : result[0])[0];
+            if (!isEmpty(option)) result = ['', option];
+          }
+        }
+        CMD.hash(...result.map((data) => typeof data === 'object' ? Object.keys(data)[0] : data));
+      }
       break;
     case 'up':
       CMD.cd('..');
@@ -102,11 +126,8 @@ async function parseInput(input, rl) {
         await CMD.ls(dir, ...result);
       }
       break;
-    case 'view':
-      result = parseArgs(str, 1, parsePath, 1, parseProps);
-      break;
     default:
-      throw new Error('Unknown command');
+      console.error('Unknown command:', cmd);
   }
 
   return [cmd, result];
