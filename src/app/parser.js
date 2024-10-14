@@ -183,8 +183,14 @@ export async function parseInput(input, rl) {
     case '--help':
       help();
       break;
+
+    case '.exit':
+      rl.close();
+      process.exit(0);
+
     case '':
       break;
+
     default:
       console.error(styleText('red','[Error] Unknown command:'), cmd, '\n');
   }
