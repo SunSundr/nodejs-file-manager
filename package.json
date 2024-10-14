@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-file-manager",
+  "version": "1.0.0",
+  "description": "A simple file manager built with Node.js",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "author": "sunsundr",
+  "license": "ISC"
+}
