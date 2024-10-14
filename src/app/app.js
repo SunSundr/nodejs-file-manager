@@ -76,7 +76,7 @@ async function parseInput(input, rl) {
       break;
     case 'os':
       result = parseArgs(str, 1, parseProps);
-      CMD.osInfo(...result);
+      await CMD.osInfo(...result);
       break;
     case 'hash':
       result = parseArgs(str, 1, parsePath);
@@ -95,6 +95,11 @@ async function parseInput(input, rl) {
     case 'cat':
       result = parseArgs(str, 1, parsePath);
       await CMD.cat(result[0], rl);
+      break;
+
+    case 'add':
+      result = parseArgs(str, 1, parsePath);
+      await CMD.add(result[0], rl);
       break;
 
     case 'up':
