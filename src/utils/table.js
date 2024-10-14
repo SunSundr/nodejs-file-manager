@@ -38,7 +38,6 @@ export function table(input) {
           if (i === 1) {
             return cell.replace(/(\d+)/, '\x1b[36m$1\x1b[0m');
           } else {
-            // return cell.replace(/(\d+)/, '\x1b[36m$1\x1b[0m');
             return cell;
           }
         })

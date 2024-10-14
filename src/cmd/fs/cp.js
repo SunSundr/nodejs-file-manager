@@ -31,7 +31,7 @@ export async function cp(oldPath, newPath, silent = false) {
       try {
         await fs.access(writePath);
         stopProgress();
-        console.error(styleText('red', `[Error] File "${writePath}" already exists`), '\n');
+        console.error(styleText('red', '[Error] Operation failed: '), `File "${writePath}" already exists\n`);
         return;
       } catch (err) {
         // nothing

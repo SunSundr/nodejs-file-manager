@@ -30,7 +30,7 @@ export const osInfo = async (...params) => {
             Model: cpu.model,
             Speed: `${cpu.speed} GHz`,
           }));
-          console.log(table(transformedData));
+          console.log(table(transformedData), '\n');
         }
         break;
 

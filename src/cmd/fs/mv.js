@@ -27,7 +27,7 @@ export async function mv(oldPath, newPath) {
       console.log(
         styleText(
           'green',
-          `"${path.basename(oldPath)}" - has been moved to "${path.dirname(newPath)}"`
+          `"${path.basename(oldPath)}" - has been moved to "${path.resolve(process.cwd(), String(newPath))}"`
         ),
         '\n'
       );

@@ -13,7 +13,7 @@ export async function rm(fPath, silent = false) {
   try {
     const fullPath = path.resolve(process.cwd(), fPath);
     await fs.rm(fullPath);
-    if (!silent) console.log(`"${path.basename(fullPath)}" - has been deleted\n`);
+    if (!silent) console.log(styleText('green', `"${path.basename(fullPath)}" - has been deleted\n`));
   } catch (err) {
     if (err.code === 'ENOENT' && fPath === '--help') {
       console.log(

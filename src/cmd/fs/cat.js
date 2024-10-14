@@ -10,6 +10,10 @@ import { fileExist } from '../../utils/fileExist.js';
  * @returns {Promise<void>}
  */
 export async function cat(param, rl) {
+  if (!param) {
+    console.error(styleText('red', `[Error] Opreation failed: `), 'Invalid input');
+    return;
+  }
   const filePath = path.resolve(process.cwd(), String(param));
   const isExist = await fileExist(filePath);
   const helpParams = ['help', '-help', '--help'];
@@ -24,7 +28,7 @@ export async function cat(param, rl) {
     }
   }
   if (!isExist) {
-    console.error(styleText('red', `[Error] File "${filePath}" does not exist.`), '\n');
+    console.error(styleText('red', `[Error] Opreation failed: `), `File "${filePath}" does not exist.\n`);
     return;
   }
   let isStopped = false;
@@ -38,7 +42,7 @@ export async function cat(param, rl) {
 
       stream.on('open', () => {
         process.stdout.write(
-          styleText('green', `Reading the file "${path.basename(filePath)}"... | content:\n`)
+          styleText('green', `Reading the file "${path.basename(filePath)}"... \nContent:\n\n`)
         );
       });
 
