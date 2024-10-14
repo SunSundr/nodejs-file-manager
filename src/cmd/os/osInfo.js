@@ -11,7 +11,11 @@ export const osInfo = async (...params) => {
     const key = keys.length ? keys[0].toLowerCase() : '';
     switch (key) {
       case 'eol': // Get EOL (default system End-Of-Line)
-        console.log(styleText('yellow', 'Default system EOL(End-Of-Line):'), styleText('green', JSON.stringify(os.EOL)), '\n');
+        console.log(
+          styleText('yellow', 'Default system EOL(End-Of-Line):'),
+          styleText('green', JSON.stringify(os.EOL)),
+          '\n'
+        );
         break;
 
       case 'cpus': // Get host machine CPUs info
@@ -19,7 +23,7 @@ export const osInfo = async (...params) => {
           const transformedData = os.cpus().map((cpu, index) => ({
             Index: index + 1,
             Model: cpu.model,
-            Speed: `${cpu.speed} GHz`
+            Speed: `${cpu.speed} GHz`,
           }));
           console.log(table(transformedData));
         }
@@ -27,13 +31,21 @@ export const osInfo = async (...params) => {
 
       case 'homedir': // Get home directory
       case 'h':
-        console.log(styleText('yellow', 'Home directory path:'), styleText('green', os.homedir()), '\n');
+        console.log(
+          styleText('yellow', 'Home directory path:'),
+          styleText('green', os.homedir()),
+          '\n'
+        );
         break;
 
       case 'username': // Get current system user name
-        console.log(styleText('yellow', 'System user name:'), styleText('green', os.userInfo().username), '\n');
+        console.log(
+          styleText('yellow', 'System user name:'),
+          styleText('green', os.userInfo().username),
+          '\n'
+        );
         break;
-    
+
       case 'architecture': // Get CPU architecture for which Node.js binary has compiled
       case 'arch':
         {
@@ -41,33 +53,51 @@ export const osInfo = async (...params) => {
           const osArch = os.arch();
 
           if (processArch === osArch) {
-            console.log(styleText('yellow', 'CPU architecture:'), styleText('green', `${processArch}\n`));
+            console.log(
+              styleText('yellow', 'CPU architecture:'),
+              styleText('green', `${processArch}\n`)
+            );
           } else {
-            console.log(styleText('yellow', 'Node.js binary architecture:'), styleText('green', `${processArch}\n`));
-            console.log(styleText('yellow', 'Operating system architecture:'), styleText('green', `${osArch}\n`));
+            console.log(
+              styleText('yellow', 'Node.js binary architecture:'),
+              styleText('green', `${processArch}\n`)
+            );
+            console.log(
+              styleText('yellow', 'Operating system architecture:'),
+              styleText('green', `${osArch}\n`)
+            );
           }
         }
         break;
 
       case '':
       case 'platform':
-        console.log(styleText('yellow', 'Operating system platform:'), styleText('green', os.platform()),'\n');
+        console.log(
+          styleText('yellow', 'Operating system platform:'),
+          styleText('green', os.platform()),
+          '\n'
+        );
         break;
 
       case 'help':
         console.log(
           styleText('green', 'Usage: ') +
-          styleText('yellow', 'os option\n') +
-          styleText('magenta', '- option: The information you want to retrieve. Available options are:\n') +
-          styleText('cyan', 
-            "'--eol': Get the default system End-Of-Line\n" +
-            "'--cpus': Get information about the host machine's CPUs\n" +
-            "'--homedir' or '-h': Get the home directory path\n" +
-            "'--username': Get the current system user name\n" +
-            "'--architecture' or '--arch': Get the CPU architecture for which Node.js binary has been compiled\n" +
-            "'--platform' or '--' (default return): Get the operating system platform\n" +
-            "'--help': Display this help message\n"
-        ));
+            styleText('yellow', 'os option\n') +
+            styleText(
+              'magenta',
+              '- option: The information you want to retrieve. Available options are:\n'
+            ) +
+            styleText(
+              'cyan',
+              "'--eol': Get the default system End-Of-Line\n" +
+                "'--cpus': Get information about the host machine's CPUs\n" +
+                "'--homedir' or '-h': Get the home directory path\n" +
+                "'--username': Get the current system user name\n" +
+                "'--architecture' or '--arch': Get the CPU architecture for which Node.js binary has been compiled\n" +
+                "'--platform' or '--' (default return): Get the operating system platform\n" +
+                "'--help': Display this help message\n"
+            )
+        );
         break;
 
       default:

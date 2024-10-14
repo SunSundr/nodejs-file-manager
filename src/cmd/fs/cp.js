@@ -6,7 +6,7 @@ import { spinner } from '../../utils/spinner.js';
 
 /**
  * Copies a file or directory to a new location.
- * 
+ *
  * @param {string} path - The path to the source file or directory.
  * @param {string} newPath - The path to the destination directory.
  * @param {boolean} [silent=false] - No output to console.
@@ -16,13 +16,17 @@ export async function cp(oldPath, newPath, silent = false) {
   const srcPath = path.resolve(process.cwd(), String(oldPath));
   const destPath = path.resolve(process.cwd(), String(newPath));
   const stopProgress = spinner();
-  try {   
+  try {
     const writePath = path.resolve(destPath, path.basename(srcPath));
     const stats = await fs.stat(srcPath);
     if (stats.isDirectory()) {
       await fs.cp(srcPath, writePath, { recursive: true, errorOnExist: true });
       stopProgress();
-      if (!silent) console.log(styleText('green', `Directory "${srcPath}" has been copied to "${writePath}"`), '\n');
+      if (!silent)
+        console.log(
+          styleText('green', `Directory "${srcPath}" has been copied to "${writePath}"`),
+          '\n'
+        );
     } else {
       try {
         await fs.access(writePath);
@@ -44,19 +48,23 @@ export async function cp(oldPath, newPath, silent = false) {
         copy.on('error', reject);
       });
       stopProgress();
-      if (!silent) console.log(styleText('green', `File "${srcPath}" has been copied to "${writePath}"`), '\n');
+      if (!silent)
+        console.log(
+          styleText('green', `File "${srcPath}" has been copied to "${writePath}"`),
+          '\n'
+        );
     }
   } catch (err) {
     stopProgress();
     if (err.code === 'ENOENT' && oldPath === '--help') {
       console.log(
         styleText('green', 'Usage: ') +
-        styleText('yellow', 'cp|copy oldPath newPath\n') +
-        styleText('cyan', '- oldPath: The path to the source file or directory\n') +
-        styleText('cyan', '- newPath: The path to the destination directory\n')
+          styleText('yellow', 'cp|copy oldPath newPath\n') +
+          styleText('cyan', '- oldPath: The path to the source file or directory\n') +
+          styleText('cyan', '- newPath: The path to the destination directory\n')
       );
     } else {
       console.error(styleText('red', `[Error] Operation failed:`), err.message, '\n');
     }
   }
-};
+}

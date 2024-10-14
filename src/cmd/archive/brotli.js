@@ -5,7 +5,7 @@ import { styleText } from 'node:util';
 
 /**
  * Compresses or decompresses a file using Brotli algorithm.
- * 
+ *
  * @param {string} fPath - The path to the source file.
  * @param {string} newPath - The path to the destination directory.
  * @param {string} [ext='br'] - The extension to use for the compressed file.
@@ -18,17 +18,20 @@ export async function brotli(fPath, newPath, ext = 'br', operationType = 'compre
     if (isCompress) {
       console.log(
         styleText('green', 'Usage: ') +
-        styleText('yellow', 'compress fPath newPath ext = "br"\n') +
-        styleText('cyan', '- fPath: The path to the source file\n') +
-        styleText('cyan', '- newPath: The path to the destination directory\n') +
-        styleText('cyan', '- ext: (Optional) The extension to use for the compressed file. Default is "br"\n')
+          styleText('yellow', 'compress fPath newPath ext = "br"\n') +
+          styleText('cyan', '- fPath: The path to the source file\n') +
+          styleText('cyan', '- newPath: The path to the destination directory\n') +
+          styleText(
+            'cyan',
+            '- ext: (Optional) The extension to use for the compressed file. Default is "br"\n'
+          )
       );
     } else {
       console.log(
         styleText('green', 'Usage: ') +
-        styleText('yellow', 'decompress fPath newPath\n') +
-        styleText('cyan', '- fPath: The path to the source file\n') +
-        styleText('cyan', '- newPath: The path to the destination directory\n')
+          styleText('yellow', 'decompress fPath newPath\n') +
+          styleText('cyan', '- fPath: The path to the source file\n') +
+          styleText('cyan', '- newPath: The path to the destination directory\n')
       );
     }
     return;
@@ -50,7 +53,7 @@ export async function brotli(fPath, newPath, ext = 'br', operationType = 'compre
         } finally {
           reject(err);
         }
-      }
+      };
 
       rfile.pipe(brotliFunc).pipe(brFile);
 
@@ -59,8 +62,15 @@ export async function brotli(fPath, newPath, ext = 'br', operationType = 'compre
       rfile.on('error', errorHand);
       rfile.on('end', resolve);
     });
-    console.log(styleText('green', `File "${srcPath}" has been ${operationType}ed to "${destPath}"`), '\n');
+    console.log(
+      styleText('green', `File "${srcPath}" has been ${operationType}ed to "${destPath}"`),
+      '\n'
+    );
   } catch (err) {
-    console.error(styleText('red', '[Error] Operation failed:'), err ? err.message : 'unknown error', '\n');
+    console.error(
+      styleText('red', '[Error] Operation failed:'),
+      err ? err.message : 'unknown error',
+      '\n'
+    );
   }
-};
+}

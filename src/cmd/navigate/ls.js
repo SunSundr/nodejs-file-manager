@@ -23,7 +23,7 @@ function formatDate(date) {
 
 /**
  * Lists the contents of a directory with various display options.
- * 
+ *
  * @param {string} [directory='.'] - The directory to list. Defaults to the current directory.
  * @param {...Object} params - Optional parameters to control the display of directory contents.
  * @param {boolean} [params.R] - Recursively list subdirectories.
@@ -36,26 +36,28 @@ function formatDate(date) {
  * @param {boolean} [params.F] - Append a "/" to directory names and a "*" to executable files.
  * @param {boolean} [params.m] - Fill width with a comma-separated list of entries.
  * @param {boolean} [params['1']] - List one file per line.
- * 
+ *
  * @returns {Promise<void>} A promise that resolves when the directory contents have been listed.
  */
 export async function ls(directory = '.', ...params) {
   try {
     const files = await fs.readdir(directory, { withFileTypes: true });
-    let tableData = await Promise.all(files.map(async file => {
-      const stats = await fs.stat(path.join(directory, file.name));
-      return {
-        Index: 0,
-        Name: file.name.length > 70 ? file.name.slice(0, 67) + '...' : file.name,
-        Type: file.isDirectory() ? 'Directory' : 'File',
-        Size: file.isDirectory() ? '-' : formatSize(stats.size),
-        FullTime: file.isDirectory() ? '-' : formatDate(stats.mtime)
-      };
-    }));
+    let tableData = await Promise.all(
+      files.map(async (file) => {
+        const stats = await fs.stat(path.join(directory, file.name));
+        return {
+          Index: 0,
+          Name: file.name.length > 70 ? file.name.slice(0, 67) + '...' : file.name,
+          Type: file.isDirectory() ? 'Directory' : 'File',
+          Size: file.isDirectory() ? '-' : formatSize(stats.size),
+          FullTime: file.isDirectory() ? '-' : formatDate(stats.mtime),
+        };
+      })
+    );
 
     const defaultSort = () => {
       tableData.sort((a, b) => {
-        if (params.some(option => option.r)) {
+        if (params.some((option) => option.r)) {
           if (a.Type === b.Type) {
             return a.Name.localeCompare(b.Name);
           }
@@ -67,7 +69,7 @@ export async function ls(directory = '.', ...params) {
           return a.Type === 'Directory' ? -1 : 1;
         }
       });
-    }
+    };
 
     for (const option of params) {
       if (option.R) {
@@ -80,7 +82,7 @@ export async function ls(directory = '.', ...params) {
       }
 
       if (option.d) {
-        tableData = tableData.filter(file => file.Type === 'Directory');
+        tableData = tableData.filter((file) => file.Type === 'Directory');
       }
 
       if (option.t) {
@@ -96,29 +98,29 @@ export async function ls(directory = '.', ...params) {
       }
 
       if (option['full-time']) {
-        tableData = tableData.map(file => ({
+        tableData = tableData.map((file) => ({
           ...file,
-          FullTime: file.FullTime
+          FullTime: file.FullTime,
         }));
       }
       if (option.F) {
-        tableData = tableData.map(file => ({
+        tableData = tableData.map((file) => ({
           ...file,
-          Name: file.Type === 'Directory' ? `${file.Name}/` : file.Name
+          Name: file.Type === 'Directory' ? `${file.Name}/` : file.Name,
         }));
       }
       if (option.m) {
-        console.log(styleText('cyan', tableData.map(file => file.Name).join(', ')), '\n');
+        console.log(styleText('cyan', tableData.map((file) => file.Name).join(', ')), '\n');
         return;
       }
       if (option['1']) {
-        console.log(styleText('cyan', tableData.map(file => file.Name).join('\n')), '\n');
+        console.log(styleText('cyan', tableData.map((file) => file.Name).join('\n')), '\n');
         return;
       }
     }
     if (!params.length) defaultSort();
 
-    tableData.forEach((data, index) => data.Index = index + 1);
+    tableData.forEach((data, index) => (data.Index = index + 1));
     console.log(table(tableData));
   } catch (err) {
     console.error('[Error] Directory reading failed:', err.message);

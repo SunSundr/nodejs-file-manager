@@ -5,7 +5,6 @@ import * as CMD from '../cmd/collection.js';
 import { fileExist } from '../utils/fileExist.js';
 import { help } from '../cmd/help.js';
 
-
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
@@ -55,7 +54,6 @@ function parsePath(str) {
   return [arg, rest.join(' ')];
 }
 
-
 export function parseProps(str, subParse = true) {
   const propMatch = typeof str === 'string' ? str.match(/^--?(\w+)(?:=(.*))?/) : null;
   if (!propMatch) return [{}, ''];
@@ -66,7 +64,6 @@ export function parseProps(str, subParse = true) {
   const parsedValue = value ? (subParse ? parsePath(value)[0] : value) : true;
   return [{ [key]: parsedValue }, lastStr];
 }
-
 
 export async function parseInput(input, rl) {
   const [cmd, str] = getCommand(input);
@@ -83,12 +80,14 @@ export async function parseInput(input, rl) {
       {
         if (result[0]) {
           const isExist = await fileExist(result[0]);
-          if (!isExist ) {
+          if (!isExist) {
             const option = parseProps(result[1] ? result[1] : result[0])[0];
             if (!isEmpty(option)) result = ['', option];
           }
         }
-        await CMD.hash(...result.map((data) => typeof data === 'object' ? Object.keys(data)[0] : data));
+        await CMD.hash(
+          ...result.map((data) => (typeof data === 'object' ? Object.keys(data)[0] : data))
+        );
       }
       break;
 
@@ -192,7 +191,7 @@ export async function parseInput(input, rl) {
       break;
 
     default:
-      console.error(styleText('red','[Error] Unknown command:'), cmd, '\n');
+      console.error(styleText('red', '[Error] Unknown command:'), cmd, '\n');
   }
 
   return [cmd, result];

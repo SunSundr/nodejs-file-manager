@@ -1,6 +1,6 @@
 import os from 'node:os';
 import readline from 'node:readline/promises';
-import { readFile } from "node:fs/promises";
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { styleText } from 'node:util';
@@ -13,21 +13,26 @@ export default class App {
     this.eol = os.EOL;
     this.rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
     this.rl.on('line', async (line) => {
       try {
         parseInput(line, this.rl).finally(() => {
           this.printPrompt();
         });
-      } catch(err) {
+      } catch (err) {
         console.error(styleText('red', '[Error]'), err ? err.message : 'Unknown error');
         this.printPrompt();
       }
     });
     this.rl.on('close', () => {
-      console.log('...\n' + 
-        styleText('green',`Thank you for using File Manager, ${this.options.username}, goodbye!\n`));
+      console.log(
+        '...\n' +
+          styleText(
+            'green',
+            `Thank you for using File Manager, ${this.options.username}, goodbye!\n`
+          )
+      );
     });
   }
 
@@ -35,7 +40,7 @@ export default class App {
     this.rl.output.write(`You are currently in: ${styleText('yellow', process.cwd())}${this.eol}`);
     this.rl.prompt();
   }
-  
+
   async start() {
     const args = process.argv;
     this.options = { username: os.userInfo().username };
@@ -45,7 +50,7 @@ export default class App {
     const banner = await readFile(bannerFile, 'utf8');
     console.log(styleText('magenta', banner), '\n');
     console.log(styleText('green', `Welcome to the File Manager, ${this.options.username}!`));
-    console.log(styleText('gray', 'Print "help" to get a command list'));
+    console.log(styleText('gray', "Type 'help' to see a list of commands."));
     console.log('-'.repeat(70));
     process.chdir(os.homedir());
     this.printPrompt();

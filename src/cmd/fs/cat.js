@@ -3,10 +3,9 @@ import path from 'node:path';
 import { styleText } from 'node:util';
 import { fileExist } from '../../utils/fileExist.js';
 
-
 /**
  * Reads and prints the content of a file.
- * 
+ *
  * @param {string} param - The path to the file or '--help' to display help information.
  * @returns {Promise<void>}
  */
@@ -18,8 +17,8 @@ export async function cat(param, rl) {
     if (!isExist) {
       console.log(
         styleText('green', 'Usage: ') +
-        styleText('yellow', 'cat|read filePath\n') +
-        styleText('cyan', '- filePath: The path to the file you want to read\n')
+          styleText('yellow', 'cat|read filePath\n') +
+          styleText('cyan', '- filePath: The path to the file you want to read\n')
       );
       return;
     }
@@ -38,9 +37,11 @@ export async function cat(param, rl) {
       const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
 
       stream.on('open', () => {
-        process.stdout.write(styleText('green', `Reading the file "${path.basename(filePath)}"... | content:\n`));
+        process.stdout.write(
+          styleText('green', `Reading the file "${path.basename(filePath)}"... | content:\n`)
+        );
       });
-    
+
       stream.on('data', (chunk) => {
         if (isStopped) {
           stream.destroy();
@@ -59,8 +60,10 @@ export async function cat(param, rl) {
       stream.on('error', reject);
     });
   } catch (err) {
-    process.stderr.write(styleText('red', `[Error] Reading file "${path.basename(filePath)}":`) + `\n${err.message}\n`);
+    process.stderr.write(
+      styleText('red', `[Error] Reading file "${path.basename(filePath)}":`) + `\n${err.message}\n`
+    );
   } finally {
     rl.removeAllListeners('SIGINT');
   }
-};
+}
