@@ -10,7 +10,7 @@ import { spinner } from '../../utils/spinner.js';
  * @param {string} newPath - The path to the destination directory.
  * @returns {Promise<void>}
  */
-export const cp = async (oldPath, newPath) => {
+export async function cp(oldPath, newPath) {
   const srcPath = path.resolve(process.cwd(), String(oldPath));
   const destPath = path.resolve(process.cwd(), String(newPath));
   const stopProgress = spinner();
@@ -20,12 +20,12 @@ export const cp = async (oldPath, newPath) => {
     if (stats.isDirectory()) {
       await fs.cp(srcPath, writePath, { recursive: true, errorOnExist: true });
       stopProgress();
-      console.log(`Directory "${srcPath}" has been copied to "${writePath}"`);
+      console.log(`Directory "${srcPath}" has been copied to "${writePath}"\n`);
     } else {
       try {
         await fs.access(writePath);
         stopProgress();
-        console.error(`[Error] File "${writePath}" already exists`);
+        console.error(`[Error] File "${writePath}" already exists\n`);
         return;
       } catch (err) {
         // nothing
@@ -42,7 +42,7 @@ export const cp = async (oldPath, newPath) => {
         copy.on('error', reject);
       });
       stopProgress();
-      console.log(`File "${srcPath}" has been copied to "${writePath}"`);
+      console.log(`File "${srcPath}" has been copied to "${writePath}"\n`);
     }
   } catch (err) {
     stopProgress();
@@ -53,7 +53,7 @@ export const cp = async (oldPath, newPath) => {
       - newPath: The path to the destination directory.
       `);
     } else {
-      console.error(`[Error] Operation failed:`, err.message);
+      console.error(`[Error] Operation failed:`, err.message, '\n');
     }
   }
 };
