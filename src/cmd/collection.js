@@ -4,3 +4,4 @@ export { cd } from './navigate/cd.js';
 export { hash } from './hash/hash.js';
 export { cat } from './fs/cat.js';
 export { add } from './fs/add.js';
+export { rn } from './fs/rn.js';
