@@ -1,6 +1,11 @@
 import { stdout } from 'process';
 
-// https://stackoverflow.com/questions/68240287/how-to-show-progress-icons-in-terminal-programs-like-seen-here
+/**
+ * Creates a spinner animation in the terminal.
+ * https://stackoverflow.com/questions/68240287/how-to-show-progress-icons-in-terminal-programs-like-seen-here
+ * 
+ * @returns {Function} A function to stop the spinner.
+ */
 export function spinner() {
   const characters = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   const cursorEsc = {
