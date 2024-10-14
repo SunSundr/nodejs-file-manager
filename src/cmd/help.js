@@ -1,11 +1,14 @@
 import { styleText } from 'node:util';
+import { config } from '../config.js';
 
 export function help() {
-  const styleCmd = 'yellow';
-  const styleArg = 'cyan';
+  const styleCmd = config.styleCmd;
+  const styleArg = config.styleArg;
+  const styleGray = config.styleGray;
+  const styleGeen = config.styleGeen;
   console.log(`
-  ${styleText('green', 'FILE MANAGER COMMAND LIST')}
-  ${styleText('gray', '---------------------------------------------------')}
+  ${styleText(styleGeen, 'FILE MANAGER COMMAND LIST')}
+  ${styleText(styleGray, '---------------------------------------------------')}
   ${styleText(styleCmd, 'up')} - Go upper from current directory
   ${styleText(styleCmd, 'cd')} - Go to dedicated folder from current directory
   ${styleText(styleCmd, 'ls')} - Print in console list of all files and folders in current directory
@@ -28,8 +31,8 @@ export function help() {
   ${styleText(styleCmd, 'compress')} ${styleText(styleArg, 'path_to_file')} ${styleText(styleArg, 'path_to_destination')} - Compress file
   ${styleText(styleCmd, 'decompress')} ${styleText(styleArg, 'path_to_file')} ${styleText(styleArg, 'path_to_destination')} - Decompress file
 
-  ${styleText('gray', '---------------------------------------------------')}
-  ${styleText('gray', 'Some commands have additional optional arguments.')}
-  ${styleText('gray', 'For more details on a command, type the command name followed by "--help"')}
+  ${styleText(styleGray, '---------------------------------------------------')}
+  ${styleText(styleGray, 'Some commands have additional optional arguments.')}
+  ${styleText(styleGray, 'For more details on a command, type the command name followed by "--help"')}
   `);
 };
