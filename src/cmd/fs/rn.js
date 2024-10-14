@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { styleText } from 'node:util';
 import { fileExist } from '../../utils/fileExist.js';
 
 /**
@@ -15,13 +16,14 @@ export const rn = async (oldNameOrParam, newName) => {
   isExist = await fileExist(oldFile);
   if (!isExist) {
     if (oldNameOrParam === '--help') {
-      console.log(`
-      Usage: rn(oldName, newName)
-      - oldName: The current name of the file you want to rename.
-      - newName: The new name for the file.
-      `);
+      console.log(
+        styleText('green', 'Usage: ') +
+        styleText('yellow', 'rn|rename oldName newName\n') +
+        styleText('cyan', '- oldName: The current name of the file you want to rename\n') +
+        styleText('cyan', '- newName: The new name for the file\n')
+      );
     } else {
-      console.error(`[Error] File "${oldNameOrParam}" does not exist\n`);
+      console.error(styleText('red', `[Error] File "${oldNameOrParam}" does not exist`), '\n');
     }
     return;
   }
@@ -34,9 +36,9 @@ export const rn = async (oldNameOrParam, newName) => {
   try {
     await fs.rename(oldFile, newFile);
     console.log(
-      `File "${path.basename(oldFile)}" has been renamed to "${path.basename(newFile)}"\n`
+      styleText('green', `"${path.basename(oldFile)}" - has been renamed to "${path.basename(newFile)}"`), '\n'
     );
   } catch(err) {
-    console.error(`[Error] Operation failed:`, err.message, '\n');
+    console.error(styleText('red','[Error] Operation failed:'), err.message, '\n');
   }
 };

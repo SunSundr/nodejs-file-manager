@@ -1,6 +1,7 @@
 import { createReadStream, createWriteStream, unlink } from 'node:fs';
 import { createBrotliDecompress, createBrotliCompress } from 'node:zlib';
 import path from 'node:path';
+import { styleText } from 'node:util';
 
 /**
  * Compresses or decompresses a file using Brotli algorithm.
@@ -15,18 +16,20 @@ export async function brotli(fPath, newPath, ext = 'br', operationType = 'compre
   const isCompress = operationType === 'compress';
   if (!newPath && fPath === '--help') {
     if (isCompress) {
-    console.log(`
-    Usage: compress(fPath, newPath, ext = 'br')
-    - fPath: The path to the source file.
-    - newPath: The path to the destination directory.
-    - ext: (Optional) The extension to use for the compressed file. Default is 'br'.
-    `);
+      console.log(
+        styleText('green', 'Usage: ') +
+        styleText('yellow', 'compress fPath newPath ext = "br"\n') +
+        styleText('cyan', '- fPath: The path to the source file\n') +
+        styleText('cyan', '- newPath: The path to the destination directory\n') +
+        styleText('cyan', '- ext: (Optional) The extension to use for the compressed file. Default is "br"\n')
+      );
     } else {
-    console.log(`
-    Usage: decompress(fPath, newPath)
-    - fPath: The path to the source file.
-    - newPath: The path to the destination directory.
-    `);
+      console.log(
+        styleText('green', 'Usage: ') +
+        styleText('yellow', 'decompress fPath newPath\n') +
+        styleText('cyan', '- fPath: The path to the source file\n') +
+        styleText('cyan', '- newPath: The path to the destination directory\n')
+      );
     }
     return;
   }
@@ -34,8 +37,6 @@ export async function brotli(fPath, newPath, ext = 'br', operationType = 'compre
   const origfName = path.basename(srcPath);
   const newFileName = isCompress ? `${origfName}.${ext}` : path.parse(origfName).name;
   const destPath = path.resolve(path.resolve(process.cwd(), String(newPath)), newFileName);
-  console.log('srcPath', srcPath);
-  console.log('destPath', destPath);
 
   try {
     await new Promise((resolve, reject) => {
@@ -58,8 +59,8 @@ export async function brotli(fPath, newPath, ext = 'br', operationType = 'compre
       rfile.on('error', errorHand);
       rfile.on('end', resolve);
     });
-    console.log(`File "${srcPath}" has been ${operationType}ed to "${destPath}"\n`);
+    console.log(styleText('green', `File "${srcPath}" has been ${operationType}ed to "${destPath}"`), '\n');
   } catch (err) {
-    console.error(`[Error] Operation failed:`, err ? err.message : 'unknown error', '\n');
+    console.error(styleText('red', '[Error] Operation failed:'), err ? err.message : 'unknown error', '\n');
   }
 };

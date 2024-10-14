@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { styleText } from 'node:util';
 import { spinner } from '../../utils/spinner.js';
 
 /**
@@ -12,15 +13,16 @@ import { spinner } from '../../utils/spinner.js';
  */
 export async function hash(fPath, param = undefined) {
   if (param === 'help') {
-    console.log(`
-      Usage: hash(filePath, algorithm)
-      - filePath: The path to the file you want to hash.
-      - algorithm: (Optional) The hashing algorithm to use (e.g., 'sha256', 'md5'). Default is 'sha256'.
-    `);
+    console.log(
+      styleText('green', 'Usage: ') +
+      styleText('yellow', 'hash filePath algorithm\n') +
+      styleText('cyan', '- filePath: The path to the file you want to hash\n') +
+      styleText('cyan', '- algorithm: (Optional) The hashing algorithm to use (e.g., "sha256", "md5"). Default is "sha256"\n')
+    );
     return;
   }
   if (!fPath) {
-    console.error('[Error] Operation failed: Specify the path to the file or use --help');
+    console.error(styleText('red', '[Error] Operation failed: Specify the path to the file or use --help\n'));
     return;
   }
   const algorithm = param?.toUpperCase() || 'SHA256';
@@ -38,8 +40,8 @@ export async function hash(fPath, param = undefined) {
       stream.on('end', () => {
         const result = hash.digest('hex');
         stopProgress();
-        console.log(`${algorithm} hash for file "${path.basename(filePath)}":`);
-        console.log(result, '\n');
+        console.log(styleText('green', `${algorithm} hash for file "${path.basename(filePath)}":`));
+        console.log(styleText('cyan', result, '\n'), '\n');
         resolve();
       });
 
@@ -49,6 +51,6 @@ export async function hash(fPath, param = undefined) {
       });
     });
   } catch(err) {
-    console.error(`[Error] Calculation ${algorithm} hash for file "${path.basename(filePath)}" failed:\n`, err.message,'\n');
+    console.error(styleText('red', `[Error] Calculation ${algorithm} hash for file "${path.basename(filePath)}" failed:\n`), err.message,'\n');
   }
 };

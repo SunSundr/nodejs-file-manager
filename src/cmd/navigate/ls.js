@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { styleText } from 'node:util';
 import { table } from '../../utils/table.js';
 
 function formatSize(size) {
@@ -72,7 +73,7 @@ export async function ls(directory = '.', ...params) {
       if (option.R) {
         for (const file of files) {
           if (file.isDirectory()) {
-            console.log(`\n${path.join(directory, file.name)}:`);
+            console.log(styleText('yellow', `\n${path.join(directory, file.name)}:`));
             await ls(path.join(directory, file.name), ...params);
           }
         }
@@ -107,11 +108,11 @@ export async function ls(directory = '.', ...params) {
         }));
       }
       if (option.m) {
-        console.log(tableData.map(file => file.Name).join(', '), '\n');
+        console.log(styleText('cyan', tableData.map(file => file.Name).join(', ')), '\n');
         return;
       }
       if (option['1']) {
-        console.log(tableData.map(file => file.Name).join('\n'), '\n');
+        console.log(styleText('cyan', tableData.map(file => file.Name).join('\n')), '\n');
         return;
       }
     }

@@ -1,7 +1,9 @@
 import os from 'node:os';
 import path from 'node:path';
+import { styleText } from 'node:util';
 import * as CMD from '../cmd/collection.js';
 import { fileExist } from '../utils/fileExist.js';
+import { help } from '../cmd/help.js';
 
 
 function isEmpty(obj) {
@@ -54,7 +56,7 @@ function parsePath(str) {
 }
 
 
-function parseProps(str, subParse = true) {
+export function parseProps(str, subParse = true) {
   const propMatch = typeof str === 'string' ? str.match(/^--?(\w+)(?:=(.*))?/) : null;
   if (!propMatch) return [{}, ''];
 
@@ -177,10 +179,14 @@ export async function parseInput(input, rl) {
       break;
 
     case 'help':
+    case '-help':
     case '--help':
+      help();
+      break;
+    case '':
       break;
     default:
-      console.error('Unknown command:', cmd);
+      console.error(styleText('red','[Error] Unknown command:'), cmd, '\n');
   }
 
   return [cmd, result];
