@@ -28,9 +28,11 @@ The project was completed as part of the [RS School](https://rs.school/) [NodeJS
 ```npm run start -- --username=your_username```
 or run npm-script `start` is defined in `package.json`
 
-4. Type --help to see command list
+4. Type `--help` to see command list.
+  
+Some commands have additional optional arguments. For more details on a command, type the command name followed by `--help`
 
-5. To exit the programm you are to type .exit or press Ctrl+C
+7. To exit the programm you are to type `.exit` or press `Ctrl+C`
 
 ## Command list
 
