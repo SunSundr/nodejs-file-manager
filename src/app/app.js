@@ -74,6 +74,9 @@ async function parseInput(input, rl) {
       result = parseArgs(str, 1, parseProps);
       CMD.osInfo(...result);
       break;
+    case 'up':
+      CMD.cd('..');
+      break;
     case 'cd':
       result = parseArgs(str, 1, parsePath);
       {

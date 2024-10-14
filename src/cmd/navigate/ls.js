@@ -120,6 +120,6 @@ export async function ls(directory = '.', ...params) {
     tableData.forEach((data, index) => data.Index = index + 1);
     console.log(table(tableData));
   } catch (err) {
-    console.error('Error reading directory:', err.message);
+    console.error('[Error] Directory reading failed:', err.message);
   }
 }

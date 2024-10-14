@@ -53,7 +53,7 @@ export const osInfo = async (...params) => {
         console.log('Operating system platform:', os.platform());
         break;
       default:
-        console.error('Error: Unknown option');
+        console.error('[Error] Unknown option');
     }
   }
 };
