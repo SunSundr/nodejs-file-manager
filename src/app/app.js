@@ -112,6 +112,11 @@ async function parseInput(input, rl) {
       await CMD.cp(...result);
       break;
 
+    case 'mv':
+      result = parseArgs(str, 2, parsePath);
+      await CMD.mv(...result);
+      break;
+
     case 'rm':
       result = parseArgs(str, 1, parsePath);
       await CMD.rm(result[0]);
