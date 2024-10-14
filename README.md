@@ -36,6 +36,20 @@ Some commands have additional optional arguments. For more details on a command,
 
 ## Command list
 
+### Navigation & working directory (nwd)
+
+Go upper from current directory (when you are in the root folder this operation shouldn't change working directory)
+
+```up```
+
+Go to dedicated folder from current directory (`path_to_directory` can be relative or absolute)
+
+```cd path_to_directory```
+
+Print in console list of all files and folders in current directory.
+
+```ls```
+
 ### Basic operations with files
 
 Read file and print it's content in console (should be done using Readable stream):
